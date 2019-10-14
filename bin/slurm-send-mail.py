@@ -197,26 +197,33 @@ if __name__ == "__main__":
 								nodes = data[6]
 								user = data[12]
 								nodelist = data[13]
-								wallclock = data[14].replace('T', ' ')
-								wallclockSeconds = int(data[15]) * 60
-								if state != 'Began':
-									end = data[4].replace('T', ' ')
-									elapsed = data[8] # [days-]hours:minutes:seconds
-									# convert elapsed to seconds
-									# do we have days?
-									match = elapsedRe.match(elapsed)
-									if match:
-										days, hours, mins, secs = match.groups()
-									else:
-										hours, mins, secs = elapsed.split(':')
-										days = 0
-									elapsedSeconds = (int(days) * 86400) + (int(hours) * 3600) + (int(mins) * 60) + int(secs)
-									wallclockAccuracy = '%.2f%%' % ((float(elapsedSeconds) / float(wallclockSeconds)) * 100.0)
-									exitCode = data[9]
-									jobState = data[5]
-									if jobState == 'TIMEOUT':
-										jobState = 'WALLCLOCK EXCEEDED'
-										wallclockAccuracy = '0%'
+                                                                if data[14].lower() == "unlimited":
+                                                                        wallclock = data[14]
+                                                                else:
+                							wallclock = data[14].replace('T', ' ')
+                                                                if data[15].lower() == "unlimited":
+                                                                        wallclockSeconds = data[15]
+                                                                else:
+                                                                        wallclockSeconds = int(data[15]) * 60
+
+                                                                if state != 'Began':
+                                                                        end = data[4].replace('T', ' ')
+                                                                        elapsed = data[8] # [days-]hours:minutes:seconds
+                                                                        # convert elapsed to seconds
+                                                                        # do we have days?
+                                                                        match = elapsedRe.match(elapsed)
+                                                                        if match:
+                                                                                days, hours, mins, secs = match.groups()
+                                                                        else:
+                                                                                hours, mins, secs = elapsed.split(':')
+                                                                                days = 0
+                                                                        elapsedSeconds = (int(days) * 86400) + (int(hours) * 3600) + (int(mins) * 60) + int(secs)
+                                                                        wallclockAccuracy = '%.2f%%' % ((float(elapsedSeconds) / float(wallclockSeconds)) * 100.0)
+                                                                        exitCode = data[9]
+                                                                        jobState = data[5]
+                                                                        if jobState == 'TIMEOUT':
+                                                                                jobState = 'WALLCLOCK EXCEEDED'
+                                                                                wallclockAccuracy = '0%'
 						cmd = '%s -o show job=%d' % (scontrolExe, jobId)
 						rtnCode, stdout, stderr = runCommand(cmd)
 						if rtnCode == 0:
