@@ -206,7 +206,7 @@ if __name__ == "__main__":
                                                                 else:
                                                                         wallclockSeconds = int(data[15]) * 60
 
-                                                                if state != 'Began' && isinstance(wallclockSeconds,(int,long,float)):
+                                                                if state != 'Began' and isinstance(wallclockSeconds,(int,long,float)):
                                                                         end = data[4].replace('T', ' ')
                                                                         elapsed = data[8] # [days-]hours:minutes:seconds
                                                                         # convert elapsed to seconds
